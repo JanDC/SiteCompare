@@ -10,6 +10,7 @@ use Spatie\Crawler\CrawlObserver;
 use Spatie\Crawler\Url;
 use SplTempFileObject;
 use Symfony\Component\DomCrawler\Crawler as DomCrawler;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Scraper implements CrawlObserver
 {
@@ -75,7 +76,7 @@ class Scraper implements CrawlObserver
             }
         } catch (Exception $exception) {
             // Carry on
-        }catch (Error $error){
+        } catch (Error $error) {
             // Carry on
         }
     }
@@ -87,6 +88,6 @@ class Scraper implements CrawlObserver
      */
     public function finishedCrawling()
     {
-        $this->csv->output($this->outputFile);
+        (new Filesystem())->dumpFile($this->outputFile, $this->csv->output());
     }
 }
