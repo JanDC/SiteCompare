@@ -93,6 +93,6 @@ class Scraper implements CrawlObserver
      */
     public function finishedCrawling()
     {
-        (new Filesystem())->dumpFile($this->outputFile, $this->csv->output());
+        (new Filesystem())->dumpFile($this->outputFile, $this->csv->getContent());
     }
 }
