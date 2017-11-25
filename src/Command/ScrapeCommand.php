@@ -36,7 +36,6 @@ class ScrapeCommand extends Command
                 $priceselector,
                 $outputFile
             ))
-            ->setMaximumCrawlCount(500)
             ->setMaximumDepth(3)
             ->setCrawlProfile(new CrawlInternalUrls($baseUrl))
             ->startCrawling($baseUrl);

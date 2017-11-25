@@ -35,6 +35,11 @@ class Scraper implements CrawlObserver
         $this->priceSelector = $priceSelector;
         $this->outputFile = $outputFile;
         $this->csv = Writer::createFromFileObject(new SplTempFileObject());
+        $this->csv->insertOne([
+                'name' => 'name',
+                'price' => 'price'
+            ]
+        );
     }
 
 
