@@ -122,15 +122,6 @@
     "symfony/dom-crawler": {
         "version": "v3.3.13"
     },
-    "symfony/css-selector": {
-        "version": "v3.3.13"
-    },
-    "symfony/browser-kit": {
-        "version": "v3.3.13"
-    },
-    "fabpot/goutte": {
-        "version": "v3.2.2"
-    },
     "twig/twig": {
         "version": "v2.4.4"
     },
