@@ -5,7 +5,9 @@ namespace App\Service;
 
 use Error;
 use Exception;
+use League\Csv\AbstractCsv;
 use League\Csv\Writer;
+use Psr\Http\Message\ResponseInterface;
 use Spatie\Crawler\CrawlObserver;
 use Spatie\Crawler\Url;
 use SplTempFileObject;
@@ -22,7 +24,7 @@ class Scraper implements CrawlObserver
     private $titleSelector;
 
     /**
-     * @var \League\Csv\AbstractCsv
+     * @var AbstractCsv
      */
     private $csv;
 
@@ -46,7 +48,7 @@ class Scraper implements CrawlObserver
     /**
      * Called when the crawler will crawl the url.
      *
-     * @param \Spatie\Crawler\Url $url
+     * @param Url $url
      *
      * @return void
      */
@@ -58,9 +60,9 @@ class Scraper implements CrawlObserver
     /**
      * Called when the crawler has crawled the given url.
      *
-     * @param \Spatie\Crawler\Url $url
-     * @param \Psr\Http\Message\ResponseInterface|null $response
-     * @param \Spatie\Crawler\Url $foundOnUrl
+     * @param Url $url
+     * @param ResponseInterface|null $response
+     * @param Url $foundOnUrl
      *
      * @return void
      */
