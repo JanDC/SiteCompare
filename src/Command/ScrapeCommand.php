@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Constraints\Optional;
 
 class ScrapeCommand extends Command
@@ -33,30 +34,33 @@ class ScrapeCommand extends Command
     {
         $helper = $this->getHelper('question');
 
-        if ($input->hasOption('base_url')) {
-            $baseUrl = $input->getOption('base_url');
-        } else {
+        $fileSystem = new Filesystem();
+
+        $baseUrl = $input->getOption('base_url');
+
+        if (is_null($baseUrl)) {
             $baseUrl = $helper->ask($input, $output, new Question('What is the base url of the site?', null));
         }
 
-        if ($input->hasOption('title_selector')) {
-            $titleselector = $input->getOption('title_selector');
-        } else {
+        $titleselector = $input->getOption('title_selector');
+
+        if (is_null($titleselector)) {
             $titleselector = $helper->ask($input, $output, new Question('Which is the css selector of the productname/title?', null));
         }
 
-        if ($input->hasOption('price_selector')) {
-            $priceselector = $input->getOption('price_selector');
-        } else {
+        $priceselector = $input->getOption('price_selector');
+        if (is_null($priceselector)) {
             $priceselector = $helper->ask($input, $output, new Question('Which is the css selector of the price of said product?', null));
         }
 
-        if ($input->hasOption('outputFile')) {
-            $outputFile = $input->getOption('outputFile');
-        } else {
+        $outputFile = $input->getOption('outputFile');
+        if (is_null($outputFile)) {
             $outputFile = $helper->ask($input, $output, new Question('Whats the desired filename of the results?', null));
         }
 
+        if (!$fileSystem->exists($outputFile)) {
+            $fileSystem->touch($outputFile);
+        }
 
         Crawler::create()->setCrawlObserver(new EmptyCrawlObserver());
 
