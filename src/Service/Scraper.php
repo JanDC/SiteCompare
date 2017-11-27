@@ -31,17 +31,23 @@ class Scraper implements CrawlObserver
     /** @var string */
     private $outputFile;
 
-    public function __construct(string $titleSelector, string $priceSelector, string $outputFile)
+    /** @var Filesystem */
+    private $fileSystem;
+
+    public function __construct(string $titleSelector, string $priceSelector, string $outputFile, int $depth)
     {
         $this->titleSelector = $titleSelector;
         $this->priceSelector = $priceSelector;
         $this->outputFile = $outputFile;
         $this->csv = Writer::createFromFileObject(new SplTempFileObject());
-        $this->csv->insertOne([
+        $this->csv->insertOne(
+            [
                 'name' => 'name',
-                'price' => 'price'
+                'price' => 'price',
             ]
         );
+        $this->fileSystem = new Filesystem();
+        $this->depth = $depth;
     }
 
 
@@ -60,7 +66,7 @@ class Scraper implements CrawlObserver
     /**
      * Called when the crawler has crawled the given url.
      *
-     * @param Url $url
+   * @param Url $url
      * @param ResponseInterface|null $response
      * @param Url $foundOnUrl
      *
@@ -76,10 +82,12 @@ class Scraper implements CrawlObserver
             $priceBlock = $domCrawler->filter($this->priceSelector)->extract(['_text']);
 
             if (count($titleBlock) && count($priceBlock)) {
-                $this->csv->insertOne([
-                    'name' => trim(reset($titleBlock)),
-                    'price' => trim(reset($priceBlock))
-                ]);
+                $this->csv->insertOne(
+                    [
+                        'name' => trim(reset($titleBlock)),
+                        'price' => trim(reset($priceBlock)),
+                    ]
+                );
             }
         } catch (Exception $exception) {
             // Carry on
@@ -95,6 +103,11 @@ class Scraper implements CrawlObserver
      */
     public function finishedCrawling()
     {
-        (new Filesystem())->dumpFile($this->outputFile, $this->csv->getContent());
+        if (!$this->fileSystem->exists($this->outputFile)) {
+            $this->fileSystem->touch($this->outputFile);
+        }
+
+        $this->fileSystem->appendToFile($this->outputFile, $this->csv->getContent());
+
     }
 }
